@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../AppRoutes/AppRoutesName.dart';
-import '../../gen/assets.gen.dart';
+import '../../core/AppRoutes/AppRoutesName.dart';
+import '../../core/gen/assets.gen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushNamed(context, AppRouteName.homeScreen);
+      Navigator.pushNamed(context, AppRouteName.layoutView);
     });
   }
 
@@ -26,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Center(
           child: Column(
-            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 15,
             children: [
               Assets.images.fedHealthMark.image(height: 100, width: 100),
               Text(

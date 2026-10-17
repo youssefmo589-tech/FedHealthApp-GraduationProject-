@@ -52,9 +52,20 @@ class $AssetsIconsGen {
   /// File path: assets/icons/activity.svg
   SvgGenImage get activity => const SvgGenImage('assets/icons/activity.svg');
 
+  /// File path: assets/icons/assesment.svg
+  SvgGenImage get assesment => const SvgGenImage('assets/icons/assesment.svg');
+
+  /// File path: assets/icons/chart-no-axes-combined.svg
+  SvgGenImage get chartNoAxesCombined =>
+      const SvgGenImage('assets/icons/chart-no-axes-combined.svg');
+
   /// File path: assets/icons/circle-check.svg
   SvgGenImage get circleCheck =>
       const SvgGenImage('assets/icons/circle-check.svg');
+
+  /// File path: assets/icons/flask-conical.svg
+  SvgGenImage get flaskConical =>
+      const SvgGenImage('assets/icons/flask-conical.svg');
 
   /// File path: assets/icons/globe.svg
   SvgGenImage get globe => const SvgGenImage('assets/icons/globe.svg');
@@ -69,21 +80,32 @@ class $AssetsIconsGen {
   SvgGenImage get slidersHorizontal =>
       const SvgGenImage('assets/icons/sliders-horizontal.svg');
 
+  /// File path: assets/icons/sparkles.svg
+  SvgGenImage get sparkles => const SvgGenImage('assets/icons/sparkles.svg');
+
   /// File path: assets/icons/stethoscope.svg
   SvgGenImage get stethoscope =>
       const SvgGenImage('assets/icons/stethoscope.svg');
+
+  /// File path: assets/icons/user-round.svg
+  SvgGenImage get userRound => const SvgGenImage('assets/icons/user-round.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
     fedHealthMark1,
     fedHealthMark,
     activity,
+    assesment,
+    chartNoAxesCombined,
     circleCheck,
+    flaskConical,
     globe,
     hospital,
     settings2,
     slidersHorizontal,
+    sparkles,
     stethoscope,
+    userRound,
   ];
 }
 

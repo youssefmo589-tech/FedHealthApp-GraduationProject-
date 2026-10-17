@@ -24,7 +24,7 @@ class AppThemeManager {
     ),
   );
 
-  static final ThemeData darktheme = ThemeData(
-    // scaffoldBackgroundColor: AppColors.white ,
-  );
+  // static final ThemeData darktheme = ThemeData(
+  //   // scaffoldBackgroundColor: AppColors.white ,
+  // );
 }
