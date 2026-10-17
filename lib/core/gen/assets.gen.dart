@@ -59,6 +59,9 @@ class $AssetsIconsGen {
   SvgGenImage get chartNoAxesCombined =>
       const SvgGenImage('assets/icons/chart-no-axes-combined.svg');
 
+  /// File path: assets/icons/check.svg
+  SvgGenImage get check => const SvgGenImage('assets/icons/check.svg');
+
   /// File path: assets/icons/circle-check.svg
   SvgGenImage get circleCheck =>
       const SvgGenImage('assets/icons/circle-check.svg');
@@ -72,6 +75,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/hospital.svg
   SvgGenImage get hospital => const SvgGenImage('assets/icons/hospital.svg');
+
+  /// File path: assets/icons/info.svg
+  SvgGenImage get info => const SvgGenImage('assets/icons/info.svg');
 
   /// File path: assets/icons/settings-2.svg
   SvgGenImage get settings2 => const SvgGenImage('assets/icons/settings-2.svg');
@@ -97,10 +103,12 @@ class $AssetsIconsGen {
     activity,
     assesment,
     chartNoAxesCombined,
+    check,
     circleCheck,
     flaskConical,
     globe,
     hospital,
+    info,
     settings2,
     slidersHorizontal,
     sparkles,
