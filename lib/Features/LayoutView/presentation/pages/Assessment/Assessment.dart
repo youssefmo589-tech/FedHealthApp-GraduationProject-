@@ -181,7 +181,10 @@ class _AssessmentState extends State<Assessment> {
                           ),
 
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+
+
+                            },
                             child: ButtonWidget(title: "Run Prediction Model"),
                           ),
 
@@ -273,6 +276,18 @@ class _AssessmentState extends State<Assessment> {
 
                                         ],)
                                     ],
+                                  ),
+
+                                  const SizedBox(height: 16),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: LinearProgressIndicator(
+                                      value: 0.885,
+                                      backgroundColor: AppColors.lightgrey,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          AppColors.blue),
+                                      minHeight: 8,
+                                    ),
                                   ),
 
                                   SizedBox(height: 16,),
