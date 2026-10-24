@@ -299,12 +299,10 @@ class _AssessmentState extends State<Assessment> {
                                         fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center,)
 
-
                                 ],
                               ),
                             ),
                           ),
-
 
                         ],
                       ),
