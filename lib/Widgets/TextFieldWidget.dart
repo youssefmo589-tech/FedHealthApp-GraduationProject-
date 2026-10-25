@@ -7,16 +7,21 @@ class TextFieldWidget extends StatelessWidget {
 
   final TextEditingController controller;
 
+  final String? Function(String?)? validator;
+
   const TextFieldWidget({
     super.key,
     required this.title,
     required this.controller,
+    required this.validator,
   });
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
 
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUnfocus,
+      validator: validator,
       controller: controller,
       style: theme.titleMedium?.copyWith(
         color: AppColors.black,

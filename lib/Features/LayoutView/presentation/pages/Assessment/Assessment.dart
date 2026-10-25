@@ -18,6 +18,8 @@ class _AssessmentState extends State<Assessment> {
 
   TextEditingController nodesController = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
 
@@ -167,21 +169,74 @@ class _AssessmentState extends State<Assessment> {
                       Column(
                         spacing: 16,
                         children: [
-                          TextFieldWidget(
-                            title: "Enter Age",
-                            controller: ageController,
+
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              spacing: 16,
+                              children: [
+                                TextFieldWidget(
+                                  title: "Enter Age",
+                                  controller: ageController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Please Enter Age";
+                                    }
+                                    else if (int.parse(value) <= 0 ||
+                                        int.parse(value) > 120) {
+                                      return "Please Enter Valid Age , from 1 to 120";
+                                    }
+                                    else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                                TextFieldWidget(
+                                  title: "Enter Year",
+                                  controller: yearController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Please Enter Year";
+                                    }
+                                    else
+                                    if (!RegExp(r'^\d{4}$').hasMatch(value)) {
+                                      return "Please Enter Valid Year";
+                                    }
+                                    else if (int.parse(value) <= 0) {
+                                      return "Please Enter Valid Year";
+                                    }
+                                    else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                                TextFieldWidget(
+                                  title: "Enter Nodes",
+                                  controller: nodesController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Please Enter Nodes";
+                                    }
+                                    else if (int.parse(value) < 0) {
+                                      return "Please Enter Positive Number or 0";
+                                    }
+                                    else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+
+                              ],
+                            ),
                           ),
-                          TextFieldWidget(
-                            title: "Enter Year",
-                            controller: yearController,
-                          ),
-                          TextFieldWidget(
-                            title: "Enter Nodes",
-                            controller: nodesController,
-                          ),
+
 
                           GestureDetector(
                             onTap: () {
+                              // if(_formKey.currentState!.validate())
+                              //   {
+                              //
+                              //   }
 
 
                             },
