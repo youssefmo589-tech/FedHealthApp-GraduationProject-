@@ -24,7 +24,7 @@ class PredectionDataModel extends PredectiondataEntity {
       confidence: json['confidence'],
       createdBy: AdminModel.fromJson(json['createdBy']),
       hospital: HospitalModel.fromJson(json['hospital']),
-      id: '_id',
+      id: json['_id'],
     );
   }
 }

@@ -1,143 +1,158 @@
 # FedHealth
 
-FedHealth is a Flutter mobile application prototype for a federated-learning research workflow. The
-current app presents a patient-assessment interface with an explicitly illustrative survival result
-and navigation shells for Research and Profile. It is a UI prototype: the source does not implement
-model inference, federated training, persistence, authentication, or a backend connection.
+FedHealth is a Flutter application prototype for a federated-learning health research workflow. Its
+current interactive feature is a patient assessment form that submits age, operation year, and
+positive lymph-node count to a prediction API and displays the returned prediction record. The
+interface describes the result as research/demo output and not for clinical decision support.
 
-## Features currently present
+## Current features
 
-- A branded splash screen, shown for three seconds before navigating to the main layout.
-- Bottom navigation between Assessment, Research, and Profile.
-- An assessment form with age, year, and nodes text fields.
-- A fixed example result labelled "Illustrative confidence"; it is static UI and is not derived from
-  entered values.
-- Shared button and text-field widgets, a light theme, and bundled Inter fonts and SVG/image assets.
-- Android and iOS Flutter platform projects.
+- Branded splash screen followed by a bottom-navigation shell for Assessment, Research, and Profile.
+- Assessment form for age, operation year, and positive nodes.
+- Prediction request handling through a BLoC, repository, use case, and Dio remote data source.
+- Loading, success, and error presentation states on the assessment screen.
+- Response parsing for the prediction result and associated administrator and hospital records.
+- Shared button and text-field widgets, a light Inter-based theme, and bundled SVG/image assets.
 
-The Assessment action currently has an empty callback. Research and Profile render empty scaffolds.
-The assessment screen itself warns that its demo data is for research only and not for clinical
-decision support.
+Research and Profile currently render empty scaffolds. No authentication, persistence, federated
+training, or on-device model inference is implemented in this Flutter source. The app displays a
+research-only notice; prediction output must not be treated as clinical advice.
 
 ## Technology
 
-- Flutter and Dart (the `pubspec.yaml` constraint is `^3.12.2`).
-- Material widgets, with `cupertino_icons` and `flutter_svg` as declared runtime packages.
-- `flutter_test` and `flutter_lints` as development dependencies.
-- Android Gradle Kotlin DSL and an iOS Xcode project for native platform integration.
+- Flutter and Dart (Dart SDK constraint `^3.12.2` in `pubspec.yaml`).
+- Material UI and `flutter_svg` for SVG assets.
+- `flutter_bloc` and `equatable` for assessment state and value comparisons.
+- `dio` for HTTP requests and `get_it` for dependency registration.
+- `skeletonizer` and `flutter_bounceable` are declared dependencies; assessment uses `skeletonizer`
+  for loading presentation.
+- `cupertino_icons`; development dependencies `flutter_test` and `flutter_lints`.
 
-No state-management, routing, networking, database, or dependency-injection package is declared.
-Routes and UI state use Flutter built-in APIs.
+## Architecture and data flow
 
-## Architecture and application flow
-
-The code is organized by feature with a small shared core and reusable widgets. The `LayoutView`
-feature contains empty `data layer` and `domain` directory scaffolding, but no implemented data
-sources, repositories, use cases, or models. The active behavior is concentrated in presentation
-widgets.
+The code is grouped by feature with shared application configuration, theme, routes, and dependency
+setup under `lib/core/`.
 
 ```mermaid
 flowchart TD
-    A[main.dart: runApp] --> B[MyApp: MaterialApp]
-    B --> C[AppConfig route generation]
-    C --> D[SplashScreen]
-    D -->|after 3 seconds| E[LayoutView]
-    E --> F[Assessment]
-    E --> G[Research: empty scaffold]
-    E --> H[Profile: empty scaffold]
+    UI[Assessment form] -->|getPrediction event| B[AssessmentBloc]
+    B --> U[GetPredectionUsecase]
+    U --> R[RepositoryInterface / RepositoryImp]
+    R --> D[GetpredectionData]
+    D -->|Dio POST| API[Configured prediction API]
+    API -->|JSON response| D
+    D --> M[Response and nested data models]
+    M --> R --> U --> B
+    B -->|Loading / Success / Error| UI
 ```
 
-`MyApp` selects the splash route, installs `AppConfig.onGenerateRoute`, and applies
-`AppThemeManager.lighttheme`. The splash screen uses `Navigator.pushNamed` to open the main layout
-after its delay. The bottom navigation changes the selected child locally with `setState`; it does
-not navigate to the separately declared Research/Profile route names.
+The Assessment page creates an `AssessmentBloc`. When the user taps **Run Prediction Model**, the
+page reads the three text controllers, creates a `PredectionRequestModel`, and dispatches a
+`getPrediction` event. The BLoC emits loading, awaits the use case and repository, then emits
+success with a parsed response or error with an exception message. The page uses `Skeletonizer`
+while loading and renders result or error content for the corresponding state.
+
+`GetpredectionData` sends a JSON POST request using Dio. Its request body contains `age`,
+`operationYear`, and `positiveNodes`. `PredectionResponseModel.fromJson` reads `success`, `result`,
+and a `data` list. Each list item is parsed into a prediction data model, including nested
+administrator and hospital models. The repository throws when the parsed `success` field is false.
+
+### API configuration
+
+The base URL is currently a constant in `lib/core/AppConstant/AppConstant.dart`, and the path is
+declared in `lib/core/EndPoints/EndPoints.dart`. No environment-file mechanism or credentials are
+configured in the inspected source. The configured base URL already includes `/api/v1/predict`,
+while the request path also equals `/api/v1/predict`; Dio combines these values, so verify the
+intended server URL/path before relying on a live request. The backend contract and deployment
+availability are not documented in this repository.
+
+The request model's `tojson()` method is not used by the remote data source; the data source builds
+the request map directly. The assessment form does not currently validate or convert the text values
+before constructing the request, while the domain request fields are strings. API/network and
+parsing errors are caught by the BLoC and surfaced through the error state.
+
+## Dependency injection and navigation
+
+`SettingDI()` registers a lazy `RepositoryInterface` implementation and `GetPredectionUsecase` in
+GetIt; `main()` calls this setup before `runApp`. The BLoC retrieves the use case from this locator.
+Routes are generated in `lib/core/AppConfig/AppConfig.dart`; the splash route is the initial route.
+The bottom navigation changes the selected page locally with `setState`. Research and Profile
+route-name constants exist, but route generation currently maps only splash, Assessment, and
+LayoutView.
 
 ## Project structure
 
 ```text
-assets/
-  fonts/                 Inter font files
-  icons/                 SVG icons and marks
-  images/                Image assets
+assets/                         Fonts, icons, and images
 lib/
-  main.dart              Flutter entry point and MaterialApp setup
   Features/
-    splashScreen/        Splash screen
+    splashScreen/               Splash screen
     LayoutView/
-      data layer/        Empty data-source/repository implementation scaffolding
-      domain/            Empty repository/use-case scaffolding
+      data layer/
+        Models/                 Prediction, administrator, and hospital JSON models
+        dataSource/             Dio remote prediction request
+        repositoryImp/           Prediction repository implementation
+      domain/
+        Entities/                Request and response entities
+        repository/              Repository contract
+        Usecases/                Prediction use case
       presentation/
-        manager/         Empty presentation manager scaffolding
-        pages/           Assessment, LayoutView, Research, Profile
-  Widgets/               Shared ButtonWidget and TextFieldWidget
+        manager/                 Assessment BLoC, events, and states
+        pages/                   Assessment, layout, Research, and Profile screens
+  Widgets/                       Shared button and text-field widgets
   core/
-    AppConfig/           Named route generation
-    AppRoutes/           Route-name constants
-    Themes/              App colors and light theme
-    gen/                 Generated asset and font accessors
-android/                 Android host project and Gradle configuration
-ios/                     iOS host project and Xcode configuration
-test/                    Flutter widget-test source
-pubspec.yaml             Dart/Flutter dependencies and asset declarations
-analysis_options.yaml    Dart analyzer/lint configuration
+    AppConfig/                   Route generation
+    AppRoutes/                   Route-name constants
+    AppConstant/                 API base URL constant
+    DI/                           GetIt registrations
+    EndPoints/                   API path constants
+    Themes/                       App colors and light theme
+    gen/                          Generated asset/font accessors
+test/                             Widget tests
+android/ and ios/                 Native Flutter platform projects
+pubspec.yaml                      Package, asset, and font configuration
 ```
 
-## Requirements
+## Requirements and setup
 
-- Flutter SDK with Dart satisfying the constraint in `pubspec.yaml` (`^3.12.2`).
-- A configured Android toolchain for Android builds, or Xcode on macOS for iOS builds.
+- Flutter SDK with Dart satisfying the `^3.12.2` constraint.
+- Android toolchain for Android builds, or macOS with Xcode for iOS builds.
 
-The project metadata records Flutter's `stable` channel, but does not document a specific required
-Flutter SDK version. Android/iOS SDK versions are taken from the Flutter Gradle configuration where
-applicable.
-
-## Setup and run
-
-From the repository root:
+From the repository root, install packages and launch on a connected device or emulator:
 
 ```sh
 flutter pub get
+flutter devices
 flutter run
 ```
 
-To target a particular connected device, list devices with `flutter devices`, then run
-`flutter run -d <device-id>`.
-
-There are no application environment variables or API credentials configured in the inspected
-source. Android Gradle settings load the local Flutter SDK path from the standard, machine-specific
-`android/local.properties` file; Flutter tooling normally creates/configures this file locally.
+To select a device explicitly, use `flutter run -d <device-id>`. Flutter tooling may require a
+machine-specific `android/local.properties` file for the local SDK path. No additional application
+environment variables or API credentials are specified in the inspected source.
 
 ## Tests and analysis
 
-Run the Flutter test suite with:
+Run the repository's test command with:
 
 ```sh
 flutter test
 ```
 
-The repository contains one widget test, but it is still the default counter-app smoke test and
-expects counter UI that the current application does not provide. It therefore does not represent
-valid coverage for the present app and is expected to fail unless updated. Static analysis can be
-run with `flutter analyze`; the root analyzer configuration includes `flutter_lints`.
+The current `test/widget_test.dart` is still the default counter-app smoke test, despite the
+application no longer displaying a counter, so it does not provide valid coverage for the current
+UI. Static analysis can be run with `flutter analyze`; `analysis_options.yaml` enables the
+`flutter_lints` rules.
 
-## API and data integration
+## Development status
 
-No API endpoints or network integration are implemented in the inspected Dart source and declared
-dependencies. Assessment values are held in text controllers, but are not submitted or evaluated.
-The displayed "Positive" result and 88.5% confidence are hard-coded illustrative content. The UI
-labels the model as "Haberman - FedAvg global model," but the code does not implement the Haberman
-dataset processing, federated averaging, or a prediction model.
-
-## Implementation status and limitations
-
-- Assessment page layout and sample outcome are present; prediction logic and form validation are
-  absent.
-- Research and Profile pages are placeholders.
-- The `Research` and `Profile` route-name constants exist, but route generation does not map those
-  names; the displayed tabs are rendered directly by `LayoutView`.
-- The existing test targets the default Flutter counter template rather than this app.
-- Android release configuration currently uses the debug signing configuration, as noted in
-  `android/app/build.gradle.kts`; production release signing is not configured.
-
-No project plan or actionable feature TODOs were found beyond the platform-template Android
-application ID and release-signing TODOs.
+- Implemented in the current source: assessment form submission wiring, prediction API
+  request/response parsing, DI registration, BLoC loading/success/error states, and a research-use
+  notice.
+- Present as UI placeholders: Research and Profile screens.
+- Not established by the checked-in Flutter code: federated model training, inference
+  implementation, authentication, persistence, form validation, and robust API/environment
+  configuration.
+- The assessment response parser expects a `data` list and nested administrator/hospital fields.
+  Confirm that shape and the combined API URL against the backend contract before integration use.
+- Android release signing still uses the debug signing configuration as indicated in
+  `android/app/build.gradle.kts`; production release signing is not set up.

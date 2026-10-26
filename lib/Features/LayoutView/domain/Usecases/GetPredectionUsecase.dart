@@ -4,19 +4,14 @@ import '../../data layer/Models/PredectionRequestModel.dart';
 import '../../data layer/Models/PredectionResponseModel.dart';
 
 class GetPredectionUsecase {
-  RepositoryInterface repositoryInterface;
+  final RepositoryInterface _repositoryInterface;
 
-  GetPredectionUsecase(this.repositoryInterface);
+  GetPredectionUsecase(this._repositoryInterface);
 
-  // Future<List<PredectionResponseModel>>call(PredectionRequestModel predectionRequest) async
-  // {
-  //  try{
-  //
-  //
-  //
-  //  }catch(error){
-  //
-  //
-  //  }
-  // }
+  Future<PredectionResponseModel> call(
+      PredectionRequestModel predectionRequest) async
+  {
+    return await _repositoryInterface.getPrediction(predectionRequest);
+  }
+
 }

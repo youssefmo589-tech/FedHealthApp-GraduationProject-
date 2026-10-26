@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'core/AppConfig/AppConfig.dart';
 import 'core/AppRoutes/AppRoutesName.dart';
+import 'core/DI/SettingDI.dart';
 import 'core/Themes/AppThemeManager.dart';
 
-void main() {
+void main() async {
+  SettingDI();
   runApp(MyApp());
 }
 

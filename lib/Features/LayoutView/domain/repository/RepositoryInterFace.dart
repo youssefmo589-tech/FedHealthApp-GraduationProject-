@@ -4,7 +4,7 @@ import '../../data layer/Models/PredectionRequestModel.dart';
 
 abstract class RepositoryInterface {
 
-  Future<List<PredectionResponseModel>> getPredection(
+  Future<PredectionResponseModel> getPrediction(
       PredectionRequestModel predectionRequest);
 
 

@@ -8,6 +8,6 @@ class PredectionRequestModel extends PredectionRequestEntity {
   });
 
   Map<String, dynamic> tojson() {
-    return {'year': year, 'nodes': nodes, 'age': age};
+    return {'operationYear': year, 'PositiveNodes': nodes, 'age': age};
   }
 }
