@@ -47,11 +47,25 @@ dev_dependencies:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  # encourage good coding practices.
   flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.6
+  flutter_launcher_icons: ^0.14.4
+
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo-01.png"
+
+flutter_native_splash:
+  android: true
+  ios: true
+  color: "#000000"
+  image: assets/images/splashfed-01.png
+  android_12:
+    color: "#000000"
+    image: assets/images/splashfed-01.png
 
 
 flutter_gen:

@@ -14,7 +14,7 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
 
   AssessmentBloc()
     : _predictiondata = getit<GetPredectionUsecase>(),
-      super(LoadingState()) {
+      super(InitialState()) {
     on<getPrediction>(_getpredictiondata);
   }
 

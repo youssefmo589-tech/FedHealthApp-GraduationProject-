@@ -265,6 +265,9 @@ class _AssessmentState extends State<Assessment> {
 
                                 BlocBuilder<AssessmentBloc, AssessmentState>(
                                     builder: (context, state) {
+                                      if (state is InitialState) {
+                                        return Container();
+                                      }
                                       if (state is LoadingState) {
                                         return Skeletonizer(
                                             effect: const ShimmerEffect(

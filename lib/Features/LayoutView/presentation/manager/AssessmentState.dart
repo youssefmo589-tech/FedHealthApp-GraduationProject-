@@ -5,6 +5,11 @@ class AssessmentState extends Equatable {
   List<Object> get props => [];
 }
 
+class InitialState extends AssessmentState {
+  @override
+  List<Object> get props => [];
+}
+
 class SuccessState extends AssessmentState {
   final PredectionResponseModel predection;
 

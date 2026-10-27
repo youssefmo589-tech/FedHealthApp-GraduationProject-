@@ -124,8 +124,15 @@ class $AssetsImagesGen {
   AssetGenImage get fedHealthMark =>
       const AssetGenImage('assets/images/FedHealth mark.png');
 
+  /// File path: assets/images/logo-01.png
+  AssetGenImage get logo01 => const AssetGenImage('assets/images/logo-01.png');
+
+  /// File path: assets/images/splashfed-01.png
+  AssetGenImage get splashfed01 =>
+      const AssetGenImage('assets/images/splashfed-01.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [fedHealthMark];
+  List<AssetGenImage> get values => [fedHealthMark, logo01, splashfed01];
 }
 
 abstract final class Assets {
